@@ -38,6 +38,8 @@ const CustomToolbar = () => (
     </select>
     <select className="ql-color" />
     <button className="ql-clean" />
+    <button className="ql-bold" />
+    <button className="ql-italic" />
     <button className="ql-save">
       <SaveBtn />
     </button>
