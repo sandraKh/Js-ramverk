@@ -29,12 +29,12 @@ const CustomToolbar = () => (
       <option value="lucida">Lucida</option>
     </select> */}
     <select className="ql-size">
-      <option value="extra-small">Size 1</option>
-      <option value="small">Size 2</option>
+      <option value="small">Size 1</option>
       <option value="medium" selected>
-        Size 3
+        Size 2
       </option>
-      <option value="large">Size 4</option>
+      <option value="large">Size 3</option>
+      <option value="huge">Size 4</option>
     </select>
     <select className="ql-color" />
     <button className="ql-clean" />
@@ -46,7 +46,7 @@ const CustomToolbar = () => (
 
 // Add sizes to whitelist and register them
 const Size = Quill.import("formats/size");
-Size.whitelist = ["extra-small", "small", "medium", "large"];
+Size.whitelist = ["extra-small", "small", "medium", "large", "huge"];
 Quill.register(Size, true);
 
 // // Add fonts to whitelist and register them
@@ -111,9 +111,9 @@ class Editor extends React.Component {
 }
 
 const App = () => (
-  <div className="custom-toolbar-example">
-    <h3>Custom Toolbar with React Quill</h3>
-    <Editor placeholder={"Write something...."} />
+  <div className="container">
+    <h3 className="title">Editor by Sandra</h3>
+    <Editor />
   </div>
 );
 
