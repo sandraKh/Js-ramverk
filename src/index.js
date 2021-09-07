@@ -1,7 +1,6 @@
-import React, { Component } from "react";
+import React from "react";
 import { render } from "react-dom";
 import ReactQuill, { Quill } from "react-quill";
-import { useQuill } from "react-quilljs";
 import "react-quill/dist/quill.snow.css";
 import "./style.css";
 import * as Icon from 'react-feather';
@@ -10,12 +9,17 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  Redirect,
-  useHistory,
-  withRouter
+  withRouter,
+  Link,
+  NavLink,
+  HashRouters,
+  BrowserRouter
 } from 'react-router-dom'
-import SavedDocs from "./SavedDocs";
 import { createBrowserHistory } from 'history';
+import ReactDOM from 'react-dom'
+import Homepage from "./Homepage";
+import SavedDocs from "./SavedDocs";
+
 
 export const browserHistory = createBrowserHistory();
 
@@ -75,11 +79,10 @@ class DeleteClick extends React.Component {
   
   handleClick = () => {
       const doc = this.props.text.dataParentToChild.id
-    console.log("handle click")
       axios.delete(`https://saku16-jsramverk.azurewebsites.net/${doc._id}`)
       .then(res => {
         console.log(res)
-        browserHistory.push(`/`)
+        browserHistory.push(`${process.env.PUBLIC_URL}/`)
         window.location.reload();
       })
   }
@@ -111,7 +114,8 @@ class SaveClick extends React.Component {
       })
       .then(function (response) {
         console.log(response)
-        browserHistory.push(`/${response.data._id}`)
+        // browserHistory.push(`./editor/${response.data._id}`)
+        browserHistory.push(`${process.env.PUBLIC_URL}/`)
         window.location.reload();
 
       })
@@ -126,7 +130,7 @@ class SaveClick extends React.Component {
       })
       .then(function (response) {
         console.log(response);
-        browserHistory.push(`/${doc._id}`)
+        browserHistory.push(`./editor/${doc._id}`)
       })
       .catch(function (error) {
         console.log(error);
@@ -144,7 +148,53 @@ class SaveClick extends React.Component {
   }
 }
 
+// class SavedDocs extends React.Component {
+//   state = {
+//     persons: []
+//   }
+//   componentDidMount() {
+//     axios.get(`https://saku16-jsramverk.azurewebsites.net`)
+//       .then(res => {
+//         console.log(res.data)
+//         const persons = res.data;
+//         this.setState({ persons });
+//       })
+//   }
 
+
+//   render() {
+//     return (
+
+//         <div className="DocumentList">
+
+//         { this.state.persons.map(person => 
+//         <li>
+//         <Link to={`${process.env.PUBLIC_URL}/editor/${person._id}`}>
+//         {person.title}
+//         </Link> 
+//         </li>)}
+
+//         <Link to={`${process.env.PUBLIC_URL}/editor/`}>
+//         <button className="newButton">
+//         Create New Document
+//         </button>
+//         </Link>
+//         </div>
+// //       <div className= "savedDocs">
+// //       <h4>Saved Documents:</h4>
+// //       <ul>
+// //         { this.state.persons.map(person => <li><Link to={person._id}>{person.title}</Link></li>)}
+// //       </ul>
+// //       <button className="newBtn"><Link to="./">Create New Document</Link></button>
+// //       <Link to="/dashboard">
+// //    <button type="button">
+// //         Click Me!
+// //    </button>
+// // </Link>
+// //       </div>
+//     )
+//   }
+// }
 
 class SingleDoc extends React.Component {
 
@@ -190,7 +240,7 @@ class SingleDoc extends React.Component {
   }
 
   title(title) {
-    if (title != "") {
+    if (title !== "") {
       return <h3 className="title">Editing document: "{this.state.persons.title}" </h3>;
     }
     return <h3 className="title">New Document</h3>;
@@ -200,7 +250,6 @@ class SingleDoc extends React.Component {
   render() {
 
     let comp;
-    console.log("title", this.state.persons.title)
     if (typeof this.state.persons.title !== 'undefined') {
 
       comp = <h1 className="title"> Editing document: "{this.state.persons.title}"</h1>
@@ -212,15 +261,21 @@ class SingleDoc extends React.Component {
     }
 
     return (
-
       <div>
+      <Homepage/>
       <div className="container">
       {comp}
       <div className="text-editor">
+        <div className="wrapper">
+       <Link to={`${process.env.PUBLIC_URL}/`}>
+        <button className="newBtn">
+					Show All Documents
+        </button>
+        </Link>
+        </div>
         <CustomToolbar id = {this.state.persons}/>
-        <SavedDocs/>
         <ReactQuill style={{whiteSpace: "pre-wrap"}}
-          value={this.state.persons.content}
+          value={this.state.persons.content || '' }
           onChange={this.handleChange}
           placeholder={this.state.persons.title}
           modules={SingleDoc.modules}
@@ -233,14 +288,29 @@ class SingleDoc extends React.Component {
   }
 }
 
-const App = () => (
-  <Router>
-    <Switch>
-      <Route path="/" exact component={SingleDoc}/>
-      <Route path="/:id" component={SingleDoc}/>
-    </Switch>
-  </Router>
-  
-);
 
-render(<App />, document.getElementById("root"));
+function App() {
+  console.log(`here: ${process.env.PUBLIC_URL}`);
+  return (
+          <Router>
+              <Switch>
+              <Route exact path={`${process.env.PUBLIC_URL}/`}>
+                  <Homepage/>
+                  <SavedDocs/>
+                  </Route>
+                  <Route exact path={`${process.env.PUBLIC_URL}/editor/`} component={SingleDoc}>
+                  </Route>
+                  <Route path={`${process.env.PUBLIC_URL}/editor/:id` } component={SingleDoc}>
+                  </Route>
+              </Switch>
+          </Router>
+  );
+}
+
+
+ReactDOM.render(
+  <React.StrictMode>
+      <App />
+  </React.StrictMode>,
+  document.getElementById('root')
+);
