@@ -28,11 +28,14 @@ const browserHistory = createBrowserHistory();
 const SaveBtn = (id) => <SaveClick text = {id}/>
 
 let textfield = "";
+let titlefield = "";
+
 
 function save() {
-
-  var text = this.quill.getText();
+var text = this.quill.root.innerHTML
+var title = this.quill.getText();
   textfield = text;
+  titlefield = title;
 }
 
 // Delete button
@@ -104,7 +107,7 @@ class SaveClick extends React.Component {
     
     const doc = this.props.text.dataParentToChild.id
     //First line will be the title
-    var newTitle = textfield.split('\n')[0];
+    var newTitle = titlefield.split('\n')[0];
 
     if (typeof doc._id == 'undefined') {
       axios.post(`https://saku16-jsramverk.azurewebsites.net/`, {
