@@ -13,4 +13,4 @@ before_script:
     - yarn
 
 script:
-    - yarn test:nowatch
+    - yarn test
