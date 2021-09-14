@@ -12,7 +12,6 @@ export default class SavedDocs extends React.Component {
   componentDidMount() {
     axios.get(`https://saku16-jsramverk.azurewebsites.net`)
       .then(res => {
-        console.log(res.data)
         const persons = res.data;
         this.setState({ persons });
       })
@@ -23,17 +22,17 @@ export default class SavedDocs extends React.Component {
     return (
         <div className="DocumentList">
         <div className="wrapper">
-        <Link to={`${process.env.PUBLIC_URL}/editor/`}>
-        <button type="primary" className="newBtn">Create New Document</button>
-        </Link>
+          <Link to={`${process.env.PUBLIC_URL}/editor/`}>
+            <button type="primary" className="newBtn">Create New Document</button>
+         </Link>
         </div>
-        <div className="list">
+           <div className="list" id = "list">
         { this.state.persons.map(person => 
         <ul>
         <li>
-        <Link to={`${process.env.PUBLIC_URL}/editor/${person._id}`}>
-        {person.title}
-        </Link> 
+          <Link to={`${process.env.PUBLIC_URL}/editor/${person._id}`}>
+            {person.title}
+          </Link> 
         </li></ul>)}
         </div>
         </div>

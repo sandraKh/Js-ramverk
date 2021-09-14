@@ -23,7 +23,8 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "react-scripts test",
+    "test": "react-scripts test --coverage",
+    "test:nowatch": "react-scripts test --watchAll=false --coverage",
     "eject": "react-scripts eject",
     "deploy": "yarn build && rsync -av --delete -e \"ssh -i $HOME/.ssh/dbwebb\" build/ saku16@ssh.student.bth.se:www/editor"
   },
