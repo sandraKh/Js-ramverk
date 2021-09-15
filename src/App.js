@@ -19,10 +19,17 @@ import { createBrowserHistory } from 'history';
 import ReactDOM from 'react-dom'
 import Homepage from "./Homepage";
 import SavedDocs from "./SavedDocs";
+import socketIOClient from "socket.io-client";
+import { useRef } from "react/cjs/react.production.min";
+import TextEditor from "./TextEditor";
 
 
 const browserHistory = createBrowserHistory();
 
+//Socket setup
+
+const ENDPOINT = "saku16-jsramverk.azurewebsites.net";
+const socket = socketIOClient;
 
 // Save button
 const SaveBtn = (id) => <SaveClick text = {id}/>
@@ -151,7 +158,7 @@ class SaveClick extends React.Component {
 class SingleDoc extends React.Component {
 
   state = {
-    persons: []
+    persons: [],
   }
 
   static modules = {
@@ -197,6 +204,11 @@ class SingleDoc extends React.Component {
     return <h3 className="title">New Document</h3>;
   }
 
+  handleChanges() {
+
+    return "test";
+  }
+
 
   render() {
 
@@ -227,7 +239,7 @@ class SingleDoc extends React.Component {
         <CustomToolbar id = {this.state.persons}/>
         <ReactQuill style={{whiteSpace: "pre-wrap"}}
           value={this.state.persons.content || '' }
-          onChange={this.handleChange}
+          onChange={this.handleChanges}
           placeholder={this.state.persons.title}
           modules={SingleDoc.modules}
           formats={SingleDoc.formats}
@@ -242,13 +254,27 @@ class SingleDoc extends React.Component {
 
 function App() {
   return (
-          <Router>
+        //   <Router>
+        //       <Switch>
+        //       <Route exact path={`${process.env.PUBLIC_URL}/`}>
+        //           <Homepage/>
+        //           <SavedDocs/>
+        //           </Route>
+        //           <Route exact path={`${process.env.PUBLIC_URL}/editor/`} component={SingleDoc}>
+        //           </Route>
+        //           <Route path={`${process.env.PUBLIC_URL}/editor/:id` } component={SingleDoc}>
+        //           </Route>
+        //       </Switch>
+        //   </Router>
+
+                  <Router>
               <Switch>
               <Route exact path={`${process.env.PUBLIC_URL}/`}>
                   <Homepage/>
                   <SavedDocs/>
                   </Route>
-                  <Route exact path={`${process.env.PUBLIC_URL}/editor/`} component={SingleDoc}>
+                  <Route exact path={`${process.env.PUBLIC_URL}/editor/`}>
+                      <TextEditor/>
                   </Route>
                   <Route path={`${process.env.PUBLIC_URL}/editor/:id` } component={SingleDoc}>
                   </Route>
