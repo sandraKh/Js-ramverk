@@ -5,6 +5,7 @@ import "./style.css";
 import { v4 as uuidV4 } from 'uuid'
 import {Link } from 'react-router-dom';
 
+import GraphQl from './GraphQl';
 
 
 
@@ -37,15 +38,21 @@ export default class SavedDocs extends React.Component {
 
 
   render() {
-    const user = JSON.parse(localStorage.getItem('profile'));
-    if (!user?.result?.email){
-      return (
-        <h1>Not logged in. Please log in to access the editor.</h1>
-      )
-    }
-      else {
+
+  const user = JSON.parse(localStorage.getItem('profile'));
+
+  //  const listItem = [];
+  //  const creator = [];
+  //   this.state.persons.map((number) => listItem.push(number.access));
+
+  // this.state.persons.map((number) => creator.push(number.creator) );
+
+  //   console.log("list", listItem)
+  //   console.log("creator", creator)
+
     return (
         <div className="DocumentList">
+        <GraphQl/>
         <div className="wrapper">
           <Link to={`${process.env.PUBLIC_URL}/editor/${uuidV4()}`}>
             <button type="primary" className="newBtn">Create New Document</button>
@@ -53,9 +60,17 @@ export default class SavedDocs extends React.Component {
 
         </div>
            <div className="list" id = "list">
-          { this.state.element.map(person => 
+  
+        {/* { this.state.persons.map(person => 
         <ul>
         <li>
+          <Link to={`${process.env.PUBLIC_URL}/editor/${person._id}`}>
+            {person.title}
+          </Link> 
+        </li></ul>)} */}
+          { this.state.element.map(person => 
+        <ul class="ulA">
+        <li class="linkA">
           <Link to={`${process.env.PUBLIC_URL}/editor/${person._id}`}>
             {person.title}
           </Link> 
@@ -64,5 +79,4 @@ export default class SavedDocs extends React.Component {
         </div>
     )
   }
-}
 }
