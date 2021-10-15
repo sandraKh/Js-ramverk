@@ -8,21 +8,18 @@ import { createBrowserHistory } from 'history';
 import "./style.css";
 import Homepage from "./Homepage";
 import axios from 'axios';
-
+import { saveAs } from 'file-saver';
 
 const browserHistory = createBrowserHistory();
 
 const SAVE_INTERVAL_MS = 2000
 const TOOLBAR_OPTIONS = [
   [{ header: [1, 2, 3, 4, 5, 6, false] }],
-  [{ font: [] }],
   [{ list: "ordered" }, { list: "bullet" }],
   ["bold", "italic", "underline"],
   [{ color: [] }, { background: [] }],
   [{ script: "sub" }, { script: "super" }],
   [{ align: [] }],
-  ["code-block"],
-  ["clean"],
 ]
 
 
@@ -68,6 +65,7 @@ function PermissionForm(props) {
       })
       .then(function (response) {
         alert("User Permissions saved");
+        window.location.reload();
 
       })
       .catch(function (error) {
@@ -209,6 +207,25 @@ export default function TextEditor() {
     q.setText("Loading...")
     setQuill(q)
   }, [])
+
+
+  const createAndDownloadPdf = (e) => {
+    e.preventDefault()
+
+    let value = {
+      content:  quill.root.innerHTML,
+    }
+
+      axios.post('https://saku16-jsramverk.azurewebsites.net/create-pdf', value)
+      .then(() => axios.get('https://saku16-jsramverk.azurewebsites.net/fetch-pdf', { responseType: 'blob' }))
+      .then((res) => {
+        const pdfBlob = new Blob([res.data], { type: 'application/pdf' });
+
+        saveAs(pdfBlob, 'newPdf.pdf');
+      })
+  }
+
+
   if(!user?.result?.name) {
     return (
       <h1>Not logged in. Please log in to access the editor.</h1>
@@ -218,8 +235,12 @@ export default function TextEditor() {
       return <>
       <Homepage/>
      <h1>Editing Document</h1>
+
      <div className="wrapperTextEditor">
        <Link to={`${process.env.PUBLIC_URL}/`}>
+       <button className="newBtn" onClick={createAndDownloadPdf}>
+         Download As PDF
+         </button>
          <button className="newBtn">
          Show All Documents
          </button>

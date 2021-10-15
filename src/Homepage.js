@@ -32,7 +32,6 @@ function Homepage() {
     }, [location]);
 
     const logout = () => {
-        console.log("clikc")
         dispatch({ type: "LOGOUT" });
     
         history.push(`${process.env.PUBLIC_URL}/auth`);

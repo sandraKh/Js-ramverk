@@ -41,14 +41,6 @@ export default class SavedDocs extends React.Component {
 
   const user = JSON.parse(localStorage.getItem('profile'));
 
-  //  const listItem = [];
-  //  const creator = [];
-  //   this.state.persons.map((number) => listItem.push(number.access));
-
-  // this.state.persons.map((number) => creator.push(number.creator) );
-
-  //   console.log("list", listItem)
-  //   console.log("creator", creator)
 
     return (
         <div className="DocumentList">
@@ -60,14 +52,6 @@ export default class SavedDocs extends React.Component {
 
         </div>
            <div className="list" id = "list">
-  
-        {/* { this.state.persons.map(person => 
-        <ul>
-        <li>
-          <Link to={`${process.env.PUBLIC_URL}/editor/${person._id}`}>
-            {person.title}
-          </Link> 
-        </li></ul>)} */}
           { this.state.element.map(person => 
         <ul class="ulA">
         <li class="linkA">

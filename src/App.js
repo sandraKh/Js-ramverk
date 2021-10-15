@@ -8,13 +8,15 @@ import {
   Switch,
   Route,
   Redirect,
-} from 'react-router-dom'
+} from 'react-router-dom';
 // import { createBrowserHistory } from 'history';
 import Homepage from "./Homepage";
 import SavedDocs from "./SavedDocs";
 import TextEditor from "./TextEditor";
 import { v4 as uuidV4 } from 'uuid'
 import Auth from "./Auth/Auth";
+import { Provider } from 'react-redux';
+
 
 // const browserHistory = createBrowserHistory();
 

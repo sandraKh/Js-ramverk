@@ -14,13 +14,15 @@ const queryClient = new QueryClient();
 const store = createStore(reducers, compose(applyMiddleware(thunk)));
 
 ReactDOM.render(
-  <QueryClientProvider client={queryClient}>
   <Provider store={store}>
+  <QueryClientProvider client={queryClient}>
+  
   <React.StrictMode>
       <App />
   </React.StrictMode>
-  </Provider>
+
   </QueryClientProvider>
+  </Provider>
   ,
 
   document.getElementById('root') || document.createElement('div')
