@@ -51,9 +51,17 @@ function PermissionForm(props) {
 
   const user = JSON.parse(localStorage.getItem('profile'));
   const nameEl = React.useRef(null);
+  const [email, setEmail] = useState({
+    email: {
+      recipient: '',
+      sender: 'sandra.kullar@gmail.com',
+      subject: 'You have been invited to Sandras text Editor to edit a document.',
+      text: 'Hello. You have been invited to edit a document in Sandras text editor. Please click the link to visit the website: http://www.student.bth.se/~saku16/editor/ '
+    }
+  }
+)
   let defaultPermissions = "";
   const { id: documentId } = useParams()
-  
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -65,7 +73,15 @@ function PermissionForm(props) {
       })
       .then(function (response) {
         alert("User Permissions saved");
-        window.location.reload();
+        e.preventDefault();
+        axios.get(`https://saku16-jsramverk.azurewebsites.net/send-email?recipient=${nameEl.current.value}&sender=${email.email.sender}&topic=${email.email.subject}&text=${email.email.text}`)
+        .then(function (response) {
+          e.preventDefault();
+        })
+           //query string url
+        .catch(err => console.error(err))
+        e.preventDefault();
+       // window.location.reload();
 
       })
       .catch(function (error) {
@@ -96,6 +112,8 @@ export default function TextEditor() {
   const [creator, setCreator] = useState("empty")
   const [edit, setEdit] = useState(false)
   const [quill, setQuill] = useState()
+  let [comments, setComments] = useState([]);
+  let [commentIndex, setCommentIndex] = useState([]);
   const user = JSON.parse(localStorage.getItem('profile'));
 
   useEffect(() => {
@@ -104,7 +122,9 @@ export default function TextEditor() {
         if(typeof res.data.access !== []) {
           setPermssions( res.data.access );
         }
-
+        if(typeof res.data.comments !== []) {
+          setComments( res.data.comments );
+        }
       })
     }, [])
 
@@ -225,6 +245,46 @@ export default function TextEditor() {
       })
   }
 
+  const commentQuill = (e) => {
+    var metaData = [];
+    e.preventDefault()
+    var prompt = window.prompt("Please enter Comment", "");
+    var txt;
+    if (prompt == null || prompt === "") {
+      txt = "User cancelled the prompt.";
+    } else {
+      var range = quill.getSelection();
+      if (range) {
+        if (range.length === 0) {
+          alert("Please select text", range.index);
+        } else {
+          var text = quill.getText(range.index, range.length);
+          metaData.push({ range: range, comment: prompt });
+          quill.formatText(range.index, range.length, {
+            background: "#fff72b"
+          });
+          axios.put(`https://saku16-jsramverk.azurewebsites.net/setComment/${documentId}`, {
+            comments: metaData
+          }).then((res) => {
+            axios.get(`https://saku16-jsramverk.azurewebsites.net/${documentId}`)
+            .then(result => {
+                setComments( result.data.comments );
+            })
+          })
+
+
+        }
+      } else {
+        alert("User cursor is not in editor");
+      }
+    
+  }
+  }
+
+  const commentClick = (event, range) => {
+    quill.setSelection(range.index, range.length);
+  
+  }
 
   if(!user?.result?.name) {
     return (
@@ -232,10 +292,11 @@ export default function TextEditor() {
     )
   } else {
     if( creator === user?.result?.email || (edit === true) || (permissions?.includes(user?.result?.email))) {
+
       return <>
       <Homepage/>
      <h1>Editing Document</h1>
-
+<div className="buttons">
      <div className="wrapperTextEditor">
        <Link to={`${process.env.PUBLIC_URL}/`}>
        <button className="newBtn" onClick={createAndDownloadPdf}>
@@ -246,6 +307,8 @@ export default function TextEditor() {
          </button>
        </Link>
        <DeleteBtn/>
+       
+       
        <div className="userPerm">
        <h4>Other users invited to the document: </h4>
     { permissions ? permissions.map((permission)=>(
@@ -256,11 +319,21 @@ export default function TextEditor() {
         </div>
       )) : <p>List is empty</p>}
       </div>
+
     <div className="permissionForm"><PermissionForm/></div>
+    </div>
+       <div className="commentField">
        
-       
-       </div>
-       
+       <button className="newBtn" onClick={commentQuill}>Comment Document</button>
+       <div>
+       { comments ? comments.map((item, index)=>(
+          <div className="comments">
+            <p className='comment-link' onClick={(e) => { commentClick(e, item[0].range) }}><li class='list-group-item'> {item[0].comment} </li></p>
+          </div>
+      )) : <p>No comments</p>}
+      </div>
+      </div>
+      </div>
      <div className="container" ref={wrapperRef}></div>
      </>
   

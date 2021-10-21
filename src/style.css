@@ -82,6 +82,7 @@
     font-size: 16px;
     border-radius: 2px;
     color: white;
+    height: 3em;
   }
 
 .newBtn a {
@@ -156,4 +157,23 @@ label {
 .userSum {
   padding-left:4em;
   padding-top: 2em;
+}
+
+.commentField {
+  float: right;
+}
+
+.comments {
+  border-bottom: 2px solid;
+  list-style: none;
+  padding: 0.3em;
+  margin: 0.3em;
+}
+
+.comments p{
+  text-decoration: underline;
+}
+
+.comments p:hover{
+  color: blue;
 }
